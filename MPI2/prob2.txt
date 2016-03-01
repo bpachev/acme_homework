@@ -1,0 +1,1 @@
+#AllReduce is faster than Reduce + Bcast because it requires fewer calls to the magic MPI routines. The real reason is probably less context switching, which is very expensive.

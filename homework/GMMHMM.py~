@@ -1,0 +1,45 @@
+import numpy as np
+#from sklearn import hmm
+
+def sample_gmmhmm(gmmhmm, n_sim):
+ """
+ Simulate sampling from a GMMHMM.
+ [A, weights, means, covars, pi]
+ Returns
+ -------
+ states : ndarray of shape (n_sim,)
+ The sequence of states
+ obs : ndarray of shape (n_sim, K)
+ The generated observations (column vectors of length K)
+ """
+
+ state_dist = gmmhmm[-1]
+ A = gmmhmm[0]
+ weights = gmmhmm[1]
+ means, covars = gmmhmm[2], gmmhmm[3]
+ K = means[0,0].size
+ 
+ states = np.zeros(n_sim, dtype = int)
+ obs = np.zeros((n_sim, K))
+ for i in xrange(n_sim):
+  s = np.random.multinomial(1,state_dist)[0]
+  states[i] = s
+  component = np.random.multinomial(1, weights[s, :])[0]
+  mu, sig = means[s, component,:], covars[s, component, :, :]
+  obs[i,:] =  np.random.multivariate_normal(mu, sig)
+  print "state ", states[i], obs[i]
+  state_dist = A.dot(state_dist)
+
+def test_sample():
+ A = np.array([[.65, .35], [.15, .85]])
+ pi = np.array([.8, .2])
+ weights = np.array([[.7, .2, .1], [.1, .5, .4]])
+ means1 = np.array([[0., 17., -4.], [5., -12., -8.], [-16., 22., 2.]])
+ means2 = np.array([[-5., 3., 23.], [-12., -2., 14.], [15., -32., 0.]])
+ means = np.array([means1, means2])
+ covars1 = np.array([5*np.eye(3), 7*np.eye(3), np.eye(3)])
+ covars2 = np.array([10*np.eye(3), 3*np.eye(3), 4*np.eye(3)])
+ covars = np.array([covars1, covars2])
+ gmmhmm = [A, weights, means, covars, pi]
+ sample_gmmhmm(gmmhmm, 10)
+test_sample()
