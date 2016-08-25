@@ -41,6 +41,10 @@ def random_walk(max_iters=1e12):
 
 # Problems 3 and 4: Write a 'ContentFilter' class.
 
+def write_word_line(f, l):
+    """write a list of words l to a file f on a single line"""
+    f.write(" ".join(l)+os.linesep)
+
 class ContentFilter():
     validModes = {"w", "a"}
 
@@ -79,10 +83,26 @@ class ContentFilter():
         if unit == "line":
             with open(fname, mode) as f:
                 for l in reversed(self.word_list):
-                    f.write()
+                    write_word_line(f, l)
+        elif unit == "word":
+            with open(fname, mode) as f:
+                for l in self.word_list:
+                    write_word_line(f,l[::-1])
+        else:
+            raise ValueError("unit must be word or line")
 
     def transpose(self, fname, mode = "w"):
         self.check_mode(mode)
+        mwords = max(map(len, self.word_list))
+        nlines = [[] for i in xrange(mwords)]
+        for l in self.word_list:
+            for i, word in enumerate(l):
+                nlines[i].append(word)
+
+        with open(fname, mode) as f:
+            for l in nlines:
+                write_word_line(f, l)
+
 
     def compute_stats(self):
         self.num_lines = len(self.word_list)
@@ -102,4 +122,6 @@ class ContentFilter():
 
 cf = ContentFilter("test.txt")
 cf.reverse("out.txt")
+cf.transpose("transpose.txt")
+cf.uniform("uniform.txt")
 print cf
