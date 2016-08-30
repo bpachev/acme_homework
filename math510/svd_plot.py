@@ -8,8 +8,9 @@ def plot_arrow(vec):
 
 def ellipse_by_axes(center, x,y):
     width, height = la.norm(x), la.norm(y)
-    theta = np.arctan2(height, width)
-    return Ellipse(center, height, width, theta, fill=False)
+    theta = np.arctan2(x[1], x[0])
+    theta *= 180/np.pi
+    return Ellipse(center, 2*width, 2*height, angle = theta, fill=False)
 
 def plot_uv(A):
     """Plot the right singular vectors, and the stretched left singular vectors."""
@@ -36,8 +37,8 @@ def plot_uv(A):
     plot_arrow(u1)
     plot_arrow(u2)
     ax.add_artist(ellipse_by_axes((0,0), u1, u2))
-    ax.set_ylim([-2,2])
-    ax.set_xlim([-2,2])
+    ax.set_ylim([-4,4])
+    ax.set_xlim([-4,4])
     ax.set_aspect('equal')
     ax.grid(True, which="both")
     ax.axhline(y=0, color='k')
