@@ -105,7 +105,7 @@ class LinkedList(object):
             >>> len(l)
             4
         """
-        pass
+        return self.len
 #        raise NotImplementedError("Problem 3 Incomplete")
 
     # Problem 3
@@ -212,13 +212,37 @@ class LinkedList(object):
             self.len += 1
             
 
-l = LinkedList()
-#l.find(10)
-l.append(1)
-l.append("b")
-l.insert(2,"b")
-print l
 # Problem 6: Write a Deque class.
+class Deque(LinkedList):
+    def __init__(self):
+        LinkedList.__init__(self)
+    
+    def pop(self):
+        res = self.tail.value
+        if self.head is self.tail:
+            LinkedList.remove(self,res)            
+        else:
+            self.tail.prev.next = None
+            self.tail = self.tail.prev
+            self.len -= 1
+        return res
+    
+    def popleft(self):
+        res = self.head.value
+        LinkedList.remove(self, res)
+        return res
+    
+    def appendLeft(self, data):
+        if self.head is None:
+            LinkedList.append(self, data)
+        else: LinkedList.insert(self, data, self.head.value)
+    
+    def remove(*args, **kwargs):
+        raise NotImplementedError("Cannot remove from a deque.")
+
+    def insert(*args, **kwargs):
+        raise NotImplementedError("Cannot insert into a deque.")
+
 
 
 # Problem 7

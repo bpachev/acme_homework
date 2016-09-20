@@ -123,6 +123,8 @@ if __name__ == "__main__":
         while not len(choices):
             raw_nums = prompt("Numbers to eliminate")
             choices = box.parse_input(raw_nums, remaining)
+            if sum(choices) != roll:
+                choices = []
             if not len(choices):
                 print ("Invalid input")
 
