@@ -14,6 +14,7 @@ class Node(object):
         if type(data) in [int, str, long, float]:
             self.value = data
         else: raise TypeError("Invalid data type "+str(type(data)))
+        
 
 
 class LinkedListNode(Node):
@@ -42,6 +43,7 @@ class LinkedList(object):
         """
         self.head = None
         self.tail = None
+        self.len = 0
 
     def append(self, data):
         """Append a new node containing 'data' to the end of the list."""
@@ -58,6 +60,7 @@ class LinkedList(object):
             new_node.prev = self.tail               # tail <-- new_node
             # Now the last node in the list is new_node, so reassign the tail.
             self.tail = new_node
+        self.len += 1
 
     # Problem 2
     def find(self, data):
@@ -117,7 +120,17 @@ class LinkedList(object):
             >>> print(l1)           |   >>> print(l2)
             [1, 3, 5]               |   ['a', 'b', 'c']
         """
-        pass
+        s = "["
+        if self.head is not None:
+            cur = self.head
+            s += repr(cur.value)
+            cur = cur.next
+            while cur is not None:
+                s += ", " + repr(cur.value)
+                cur = cur.next
+        return s + "]"
+        
+        
 #        raise NotImplementedError("Problem 3 Incomplete")
 
     # Problem 4
@@ -136,8 +149,35 @@ class LinkedList(object):
             >>> print(l1)       |   >>> l3.remove(10)
             [3, 7]              |   ValueError: <message>
         """
-        pass
-#        raise NotImplementedError("Problem 4 Incomplete")
+        if self.head is None:
+            raise ValueError("Cannot remove from empty list")
+        
+        cur = self.head
+        if cur.value == data:
+            if cur is self.tail:
+                self.tail = None
+                self.head = None
+            else:
+                self.head.prev = None
+                self.head = self.head.next
+                self.len -= 1
+        else:
+            cur = cur.next
+            while cur is not None:
+                if cur.value == data:
+                    self.len -= 1
+                    if cur is self.tail:
+                        self.tail = cur.prev
+                        self.tail.next = None
+                    else:
+                        cur.prev.next = cur.next
+                        cur.next.prev = cur.prev
+                    return
+                cur = cur.next
+            
+            #if we got here, the element was not found
+            raise ValueError("Cannot remove element that is not in the list!")        
+         
 
     # Problem 5
     def insert(self, data, place):
@@ -157,12 +197,27 @@ class LinkedList(object):
             >>> print(l1)           |   >>> l2.insert(10,10)
             [1, 3, 5, 7, 7]         |   ValueError: <message>
         """
-        pass
-#        raise NotImplementedError("Problem 5 Incomplete")
+        el = self.find(place)
+        new = LinkedListNode(data)
+        if el is self.head:
+            new.next = el
+            el.prev = new
+            self.head = new
+            self.len += 1
+        else:
+            new.next = el
+            new.prev = el.prev
+            el.prev.next = new
+            el.prev = new
+            self.len += 1
+            
 
 l = LinkedList()
 #l.find(10)
 l.append(1)
+l.append("b")
+l.insert(2,"b")
+print l
 # Problem 6: Write a Deque class.
 
 
