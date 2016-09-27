@@ -128,7 +128,9 @@ class BST(object):
         """
         new = BSTNode(data)
         if self.root is None:
-            self.root = new            
+            self.root = new
+            return           
+        
         def _step(current, prev, data):
             if current is None:
                 return prev
@@ -168,8 +170,16 @@ class BST(object):
             [1, 5, 7]           |   >>> b.remove(4)     |
             [8]                 |   >>> print(b)        |
         """
-
-        pass
+        
+        node = self.find(data)
+        if node is self.root:
+            if node.right is None:
+                if node.left is None:
+                    self.root = None
+                    return
+                else:
+                    
+                
 
     def __str__(self):
         """String representation: a hierarchical view of the BST.
