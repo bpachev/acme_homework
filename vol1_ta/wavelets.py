@@ -1,5 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
+from scipy.misc import imread
+import pywt
 
 def dwt(arr,ndetails):
     """
@@ -26,7 +28,7 @@ def iwt(coeffs):
         res = new
     return res
 
-if __name__ == "__main__":
+def probs1_2():
     n = 2**10
     domain = np.linspace(0,4*np.pi, n)
     noise = np.random.random(n)*.1
@@ -46,5 +48,32 @@ if __name__ == "__main__":
     plt.plot(nsin)
     plt.title("X")
     plt.show()
+
+def prob3(image="swanlake_polluted.jpg"):
+    #the True flag ensures the image will be grayscale
+    img = imread(image, True)
+    lw = pywt.dwt2(img,'db4', mode='per')
+    plt.subplot(221)
+    plt.imshow(lw[0], cmap='gray')
+    for n in xrange(1,4):
+        plt.subplot(2,2,n+1)
+        plt.imshow(lw[1][n-1], cmap='gray')
+    plt.show()
     
+def prob4(image="swanlake_polluted.jpg"):
+    img = imread(image, True)
+    wavelet = pywt.Wavelet('haar')
+    coeffs = pywt.wavedec2(img, wavelet)
+    print len(coeffs)
+    cleaned = pywt.waverec2(coeffs[:-1], wavelet)
+    plt.subplot(121)
+    plt.imshow(img,cmap='gray')
+    plt.title("Original")
+    plt.subplot(122)
+    plt.imshow(cleaned, cmap='gray')
+    plt.title("Cleaned")
+    plt.show()
+
+if __name__ == "__main__":
+    prob4()    
     
